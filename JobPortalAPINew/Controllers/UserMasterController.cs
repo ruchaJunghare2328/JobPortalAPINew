@@ -272,7 +272,7 @@ namespace JopPortalAPI.Controllers
             return usertDetails;
         }
 
-         
+
 
 
         //[HttpPost("AddResumeWithFile")]
@@ -318,36 +318,38 @@ namespace JopPortalAPI.Controllers
         //        return StatusCode(500, $"Error: {ex.Message}");
         //    }
         //}
-
         [HttpPost("AddResumeWithFile")]
-        public async Task<IActionResult> AddResumeWithFile([FromForm] UserMasterDto user, [FromForm] IFormFile resumeFile)
+        public async Task<IActionResult> AddResumeWithFile(
+    [FromForm] UserMasterDto user,
+    [FromForm] IFormFile resumeFile)
         {
             try
             {
-                
+                if (user == null)
+                    return BadRequest("User data is required.");
 
                 if (user.BaseModel == null)
                     user.BaseModel = new BaseModel();
 
-                var accountName = _configuration["AzureBlobStorage:AccountName"];
-                var containerName = _configuration["AzureBlobStorage:ContainerName"];
-                var blobUri = new Uri($"https://{accountName}.blob.core.windows.net");
-
-                var credential = new DefaultAzureCredential();
                 user.BaseModel.OperationType = "UploadResume";
                 user.um_updateddate = DateTime.Now;
+
+                var connectionString = _configuration["AzureBlobStorage:ConnectionString"];
+                var containerName = _configuration["AzureBlobStorage:ContainerName"];
+
+                if (string.IsNullOrEmpty(connectionString))
+                    return StatusCode(500, "Azure Blob connection string is missing.");
 
                 if (resumeFile != null && resumeFile.Length > 0)
                 {
                     var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(resumeFile.FileName)}";
                     user.UFileName = uniqueFileName;
 
-                    // Upload to Azure Blob Storage
-                    var blobServiceClient = new BlobServiceClient(blobUri, credential);
+                    // Create Blob Service Client using Connection String
+                    var blobServiceClient = new BlobServiceClient(connectionString);
                     var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
 
                     await containerClient.CreateIfNotExistsAsync();
-                      // Optional: make blobs publicly accessible
 
                     var blobClient = containerClient.GetBlobClient(uniqueFileName);
 
@@ -356,8 +358,8 @@ namespace JopPortalAPI.Controllers
                         await blobClient.UploadAsync(stream, overwrite: true);
                     }
 
-                    user.filePath = blobClient.Uri.ToString();      // Store blob URL as file path
-                    user.ResumeUrl = blobClient.Uri.ToString();     // Also store it as resume URL
+                    user.filePath = blobClient.Uri.ToString();
+                    user.ResumeUrl = blobClient.Uri.ToString();
                 }
 
                 var createdUser = await _usermaster.UserMaster1(user);
@@ -369,6 +371,57 @@ namespace JopPortalAPI.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+        //old code
+        //[HttpPost("AddResumeWithFile")]
+        //public async Task<IActionResult> AddResumeWithFile([FromForm] UserMasterDto user, [FromForm] IFormFile resumeFile)
+        //{
+        //    try
+        //    {
+
+
+        //        if (user.BaseModel == null)
+        //            user.BaseModel = new BaseModel();
+
+        //        var accountName = _configuration["AzureBlobStorage:AccountName"];
+        //        var containerName = _configuration["AzureBlobStorage:ContainerName"];
+        //        var blobUri = new Uri($"https://{accountName}.blob.core.windows.net");
+
+        //        var credential = new DefaultAzureCredential();
+        //        user.BaseModel.OperationType = "UploadResume";
+        //        user.um_updateddate = DateTime.Now;
+
+        //        if (resumeFile != null && resumeFile.Length > 0)
+        //        {
+        //            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(resumeFile.FileName)}";
+        //            user.UFileName = uniqueFileName;
+
+        //            // Upload to Azure Blob Storage
+        //            var blobServiceClient = new BlobServiceClient(blobUri, credential);
+        //            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+        //            await containerClient.CreateIfNotExistsAsync();
+        //              // Optional: make blobs publicly accessible
+
+        //            var blobClient = containerClient.GetBlobClient(uniqueFileName);
+
+        //            using (var stream = resumeFile.OpenReadStream())
+        //            {
+        //                await blobClient.UploadAsync(stream, overwrite: true);
+        //            }
+
+        //            user.filePath = blobClient.Uri.ToString();      // Store blob URL as file path
+        //            user.ResumeUrl = blobClient.Uri.ToString();     // Also store it as resume URL
+        //        }
+
+        //        var createdUser = await _usermaster.UserMaster1(user);
+
+        //        return Ok(createdUser);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Error: {ex.Message}");
+        //    }
+        //}
 
 
 
