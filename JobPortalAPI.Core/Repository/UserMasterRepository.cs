@@ -1,0 +1,320 @@
+﻿using Dapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using JopPortalAPI.Core.ModelDtos;
+using JopPortalAPI.DataAccess.Context;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace JopPortalAPI.Core.Repository
+{
+    public class UserMasterRepository
+    {
+        private readonly DatabaseContext _dbContext;
+        public UserMasterRepository(DatabaseContext dbContext)
+        {
+			_dbContext = dbContext;
+        }
+
+		
+		public async Task<IActionResult> UserMaster(UserMasterDto model)
+        {
+
+            using (var connection = _dbContext.CreateConnection())
+
+            {
+				var parameter = SetUser(model);
+				try
+                {
+                    var sqlConnection = (Microsoft.Data.SqlClient.SqlConnection)connection;
+                    await sqlConnection.OpenAsync();
+                    var queryResult = await connection.QueryMultipleAsync("proc_UserMaster", parameter, commandType: CommandType.StoredProcedure, commandTimeout: 300);
+                    var Model = queryResult.Read<Object>().ToList();
+                    var outcome = queryResult.ReadSingleOrDefault<Outcome>();
+                    var outcomeId = outcome?.OutcomeId ?? 0;
+                    var outcomeDetail = outcome?.OutcomeDetail ?? string.Empty;
+                    var result = new Result
+                    {
+                        Outcome = outcome,
+                        Data = Model,
+                        UserId = model.UserId,
+                        SessionId = model.SessionId,
+                        IpAddress = model.IpAddress
+                    };
+
+                    if (outcomeId == 1)
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 200
+                        };
+                    }
+					else if (outcomeId == 2)
+					{
+						return new ObjectResult(result)
+						{
+							StatusCode = 409
+						};
+					}
+                    else if (outcomeId == 3)
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 423
+                        };
+                    }
+                    else if (outcomeId == 4)
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 424
+                        };
+                    }
+                    else
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 400
+                        };
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+		public async Task<IActionResult> Shuffle(UserMasterDto model)
+		{
+
+			using (var connection = _dbContext.CreateConnection())
+
+			{
+				var parameter = SetUser(model);
+				try
+				{
+					var sqlConnection = (Microsoft.Data.SqlClient.SqlConnection)connection;
+					await sqlConnection.OpenAsync();
+					var queryResult = await connection.QueryMultipleAsync("proc_UserMaster", parameter, commandType: CommandType.StoredProcedure, commandTimeout: 300);
+					var Model = queryResult.Read<Object>().ToList();
+					var outcome = queryResult.ReadSingleOrDefault<Outcome>();
+					var outcomeId = outcome?.OutcomeId ?? 0;
+					var outcomeDetail = outcome?.OutcomeDetail ?? string.Empty;
+					var result = new Result
+					{
+						Outcome = outcome,
+                        Data = Model,
+                        UserId = model.UserId
+                    };
+
+					if (outcomeId == 1)
+					{
+						return new ObjectResult(result)
+						{
+							StatusCode = 200
+						};
+					}
+					else if (outcomeId == 2)
+					{
+						return new ObjectResult(result)
+						{
+							StatusCode = 409
+						};
+					}
+                    else if (outcomeId == 3)
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 423
+                        };
+                    }
+                    else
+					{
+						return new ObjectResult(result)
+						{
+							StatusCode = 400
+						};
+					}
+				}
+				catch (Exception)
+				{
+					throw;
+				}
+			}
+		}
+
+
+        public async Task<IActionResult> UserMaster1(UserMasterDto model)
+        {
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var parameter = SetUser(model);
+                try
+                {
+                    var sqlConnection = (Microsoft.Data.SqlClient.SqlConnection)connection;
+                    await sqlConnection.OpenAsync();
+
+                    var outcome = await connection.QuerySingleOrDefaultAsync<Outcome>(
+                                   "proc_UserMaster",
+                                   parameter,
+                                   commandType: CommandType.StoredProcedure,
+                                   commandTimeout: 300
+                        ) ;
+
+                 var result = new Result
+                 {
+                     Outcome = outcome,
+                     Data = null, // no data if SP doesn't return it
+                     UserId = model.UserId,
+                     SessionId = model.SessionId,
+                     IpAddress = model.IpAddress
+                 };
+                 
+                 return outcome?.OutcomeId switch
+                 {
+                     1 => new ObjectResult(result) { StatusCode = 200 },
+                     2 => new ObjectResult(result) { StatusCode = 409 },
+                     3 => new ObjectResult(result) { StatusCode = 423 },
+                     4 => new ObjectResult(result) { StatusCode = 424 },
+                     _ => new ObjectResult(result) { StatusCode = 400 },
+                 };
+                    
+                }
+                catch (Exception ex)
+                {
+                    throw; // optionally log ex
+                }
+            }
+        }
+
+
+        public async Task<IActionResult> Get(UserMasterDto model)
+        {
+            using (var connection = _dbContext.CreateConnection())
+            {
+				var parameter = SetUser(model);
+				try
+                {
+                    var sqlConnection = (Microsoft.Data.SqlClient.SqlConnection)connection;
+                    await sqlConnection.OpenAsync();
+                    var queryResult = await connection.QueryMultipleAsync("proc_UserMaster", parameter, commandType: CommandType.StoredProcedure, commandTimeout: 300);
+                    var Model = queryResult.ReadSingleOrDefault<Object>();
+                    var outcome = queryResult.ReadSingleOrDefault<Outcome>();
+                    var outcomeId = outcome?.OutcomeId ?? 0;
+                    var outcomeDetail = outcome?.OutcomeDetail ?? string.Empty;
+                    var result = new Result
+                    {
+                        Outcome = outcome,
+						Data = Model,
+						UserId = model.UserId,
+                        SessionId = model.SessionId,
+                        IpAddress = model.IpAddress
+                    };
+
+                    if (outcomeId == 1)
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 200
+                        };
+                    }
+                    else
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 400
+                        };
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+		public async Task<IActionResult> GetEmailId(EmailConfigureDto model)
+		{
+			using (var connection = _dbContext.CreateConnection())
+			{
+				//Guid? userIdValue = (Guid)user.UserId;
+				try
+				{
+					var sqlConnection = (Microsoft.Data.SqlClient.SqlConnection)connection;
+					await sqlConnection.OpenAsync();
+
+
+					
+					var queryResult = await connection.QueryMultipleAsync("ProcEmailConfigure", commandType: CommandType.StoredProcedure, commandTimeout: 300);
+					var Model = queryResult.ReadSingleOrDefault<Object>();
+					var outcome = queryResult.ReadSingleOrDefault<Outcome>();
+					var outcomeId = outcome?.OutcomeId ?? 0;
+					var outcomeDetail = outcome?.OutcomeDetail ?? string.Empty;
+					//var IDMail = outcome?.IDMail ?? string.Empty;
+					var result = new Result
+					{
+						Outcome = outcome,
+						Data = Model,
+						//UserId = model.UserId
+					};
+
+					if (outcomeId == 1)
+					{
+						return new ObjectResult(result)
+						{
+							StatusCode = 200
+						};
+					}
+					else
+					{
+						return new ObjectResult(result)
+						{
+							StatusCode = 400
+						};
+					}
+				}
+				catch (Exception)
+				{
+					throw;
+				}
+			}
+		}
+		public DynamicParameters SetUser(UserMasterDto user)
+        {
+
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@OperationType", user.BaseModel.OperationType, DbType.String);
+            parameters.Add("@um_id", user.um_id, DbType.Guid);
+            parameters.Add("@UserId", user.UserId, DbType.String);
+            parameters.Add("@um_user_name", user.um_user_name, DbType.String);
+            parameters.Add("@um_password", user.um_password, DbType.String);
+            parameters.Add("@um_roleid", user.um_roleid, DbType.String);
+            parameters.Add("@CompanyName", user.CompanyName, DbType.String);
+            parameters.Add("@CompanyLogo", user.CompanyLogo, DbType.String);
+            parameters.Add("@CompanyWebsite", user.CompanyWebsite, DbType.String);
+            parameters.Add("@um_EmailId", user.um_EmailId, DbType.String);
+            parameters.Add("@um_recruitid", user.um_recruitid, DbType.String); 
+            parameters.Add("@s_umids", user.s_umids, DbType.String);
+            parameters.Add("@ResumeUrl", user.ResumeUrl, DbType.String);
+            parameters.Add("@UFileName", user.UFileName, DbType.String);
+            parameters.Add("@filePath", user.filePath, DbType.String);
+            parameters.Add("@um_rolename", user.um_rolename, DbType.String); 
+            parameters.Add("@um_isactive", user.um_isactive, DbType.String);
+            parameters.Add("@um_createddate", user.um_createddate, DbType.DateTime);
+            parameters.Add("@um_updateddate", user.um_updateddate, DbType.DateTime);
+			if (user.DataTable != null && user.DataTable.Rows.Count > 0)
+			{
+				parameters.Add("@UserMaster", user.DataTable.AsTableValuedParameter("[dbo].[tbl_UserMaster]"));
+			}
+			parameters.Add("@OutcomeId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parameters.Add("@OutcomeDetail", dbType: DbType.String, size: 4000, direction: ParameterDirection.Output);
+            return parameters;
+
+        }
+    }
+}
