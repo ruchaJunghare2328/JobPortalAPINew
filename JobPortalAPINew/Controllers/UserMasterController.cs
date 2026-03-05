@@ -471,27 +471,23 @@ namespace JopPortalAPI.Controllers
         //        return StatusCode(500, $"Error downloading file: {ex.Message}");
         //    }
         //}
-
-
         [HttpGet("DownloadResume")]
         public async Task<IActionResult> DownloadResume([FromQuery] UserMasterDto user, string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName))
                 return BadRequest("Filename is required.");
 
-            var accountName = _configuration["AzureBlobStorage:AccountName"];
+            var connectionString = _configuration["AzureBlobStorage:ConnectionString"];
             var containerName = _configuration["AzureBlobStorage:ContainerName"];
 
-            if (string.IsNullOrEmpty(accountName) || string.IsNullOrEmpty(containerName))
+            if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(containerName))
                 return StatusCode(500, "Storage configuration is missing.");
 
             try
             {
-                // Correct full URI: includes account + container
-                var containerUri = new Uri($"https://{accountName}.blob.core.windows.net/{containerName}");
-                var containerClient = new BlobContainerClient(containerUri, new DefaultAzureCredential());
+                // ConnectionString se directly BlobContainerClient banao
+                var containerClient = new BlobContainerClient(connectionString, containerName);
 
-                // ONLY the file name here (NOT container name)
                 var blobClient = containerClient.GetBlobClient(fileName);
 
                 if (!await blobClient.ExistsAsync())
@@ -515,7 +511,7 @@ namespace JopPortalAPI.Controllers
                     {
                         FileName = fileName,
                         ContentType = "application/pdf",
-                        FileBytes = fileBytes
+                        FileBytes = Convert.ToBase64String(fileBytes)
                     },
                     UserId = user.UserId
                 };
@@ -527,6 +523,61 @@ namespace JopPortalAPI.Controllers
                 return StatusCode(500, $"Error downloading file: {ex.Message}");
             }
         }
+        //old code
+        //[HttpGet("DownloadResume")]
+        //public async Task<IActionResult> DownloadResume([FromQuery] UserMasterDto user, string fileName)
+        //{
+        //    if (string.IsNullOrWhiteSpace(fileName))
+        //        return BadRequest("Filename is required.");
+
+        //    var accountName = _configuration["AzureBlobStorage:AccountName"];
+        //    var containerName = _configuration["AzureBlobStorage:ContainerName"];
+
+        //    if (string.IsNullOrEmpty(accountName) || string.IsNullOrEmpty(containerName))
+        //        return StatusCode(500, "Storage configuration is missing.");
+
+        //    try
+        //    {
+        //        // Correct full URI: includes account + container
+        //        var containerUri = new Uri($"https://{accountName}.blob.core.windows.net/{containerName}");
+        //        var containerClient = new BlobContainerClient(containerUri, new DefaultAzureCredential());
+
+        //        // ONLY the file name here (NOT container name)
+        //        var blobClient = containerClient.GetBlobClient(fileName);
+
+        //        if (!await blobClient.ExistsAsync())
+        //            return NotFound("File not found in blob storage.");
+
+        //        byte[] fileBytes;
+        //        using (var memoryStream = new MemoryStream())
+        //        {
+        //            await blobClient.DownloadToAsync(memoryStream);
+        //            fileBytes = memoryStream.ToArray();
+        //        }
+
+        //        var result = new
+        //        {
+        //            Outcome = new
+        //            {
+        //                OutcomeId = 1,
+        //                OutcomeDetail = "Resume downloaded successfully"
+        //            },
+        //            Data = new
+        //            {
+        //                FileName = fileName,
+        //                ContentType = "application/pdf",
+        //                FileBytes = fileBytes
+        //            },
+        //            UserId = user.UserId
+        //        };
+
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Error downloading file: {ex.Message}");
+        //    }
+        //}
 
 
         //[HttpPost("upload")]

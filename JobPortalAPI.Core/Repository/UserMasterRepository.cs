@@ -159,23 +159,25 @@ namespace JopPortalAPI.Core.Repository
                     var sqlConnection = (Microsoft.Data.SqlClient.SqlConnection)connection;
                     await sqlConnection.OpenAsync();
 
-                    var outcome = await connection.QuerySingleOrDefaultAsync<Outcome>(
+                    var queryResult = await connection.QueryMultipleAsync(
                                    "proc_UserMaster",
                                    parameter,
                                    commandType: CommandType.StoredProcedure,
                                    commandTimeout: 300
                         ) ;
-
-                 var result = new Result
-                 {
-                     Outcome = outcome,
-                     Data = null, // no data if SP doesn't return it
-                     UserId = model.UserId,
-                     SessionId = model.SessionId,
-                     IpAddress = model.IpAddress
-                 };
-                 
-                 return outcome?.OutcomeId switch
+                    var Model = queryResult.ReadSingleOrDefault<Object>();
+                    var outcome = queryResult.ReadSingleOrDefault<Outcome>();
+                    var outcomeId = outcome?.OutcomeId ?? 0;
+                    var outcomeDetail = outcome?.OutcomeDetail ?? string.Empty;
+                    var result = new Result
+                    {
+                        Outcome = outcome,
+                        Data = Model,
+                        UserId = model.UserId,
+                        SessionId = model.SessionId,
+                        IpAddress = model.IpAddress
+                    };
+                    return outcome?.OutcomeId switch
                  {
                      1 => new ObjectResult(result) { StatusCode = 200 },
                      2 => new ObjectResult(result) { StatusCode = 409 },
