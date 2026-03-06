@@ -30,6 +30,8 @@ namespace JobPortalAPI.Core.ModelDtos
         public string? CompStartDate { get; set; }
         public string? CompEndDate { get; set; }
         public string? skill_Name { get; set; }
+        public string? Aboutme { get; set; }
+        public string? ProfilePhoto { get; set; }
         public string? ProficiencyPercentage { get; set; }
         public ICollection<EducationDto> Educations { get; set; } = new List<EducationDto>();
         public ICollection<WorkExperienceDto> WorkExperiences { get; set; } = new List<WorkExperienceDto>();
