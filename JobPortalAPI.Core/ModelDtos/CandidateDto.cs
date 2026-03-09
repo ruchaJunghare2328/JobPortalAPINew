@@ -46,7 +46,7 @@ namespace JobPortalAPI.Core.ModelDtos
         // public ICollection<WorkExperienceDto> WorkExperiences { get; set; }
         //public ICollection<SkillDto> Skills { get; set; }
         public DateTime? createddate { get; set; }
-        public DateTime? DOB { get; set; }
+        public DateTime? DOB  { get; set; }
         public DateTime? updateddate { get; set; }
        // public DataTable? DataTable { get; set; }
         public DataTable? EducationTable { get; set; }
