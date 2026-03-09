@@ -620,7 +620,7 @@ namespace JobPortalAPI.Core.Repository
             parameters.Add("@ClosingDate", user.ClosingDate, DbType.DateTime);
             parameters.Add("@um_createddate", user.um_createddate, DbType.DateTime);
             parameters.Add("@um_updateddate", user.um_updateddate, DbType.DateTime);
-            parameters.Add("@StatusByEmployee", user.statusbyemployee, DbType.String);
+            parameters.Add("@StatusByEmployee", user.StatusByEmployee, DbType.String);
             if (user.DataTable != null && user.DataTable.Rows.Count > 0)
             {
                 parameters.Add("@UserMaster", user.DataTable.AsTableValuedParameter("[dbo].[tbl_UserMaster]"));

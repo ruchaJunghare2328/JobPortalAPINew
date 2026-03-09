@@ -401,6 +401,7 @@ namespace JobPortalAPI.Core.Repository
             parameters.Add("@Location", user.Location, DbType.String);
             parameters.Add("@Web", user.Web, DbType.String);
             parameters.Add("@aboutme", user.AboutMe, DbType.String);
+            parameters.Add("@DOB", user.DOB, DbType.String);
             parameters.Add("@currentindustry", user.CurrentIndustry, DbType.String);
             parameters.Add("@profilephoto", user.ProfilePhoto, DbType.String);
             parameters.Add("@Phone", user.PreHour, DbType.String);
