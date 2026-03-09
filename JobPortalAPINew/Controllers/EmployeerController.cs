@@ -216,8 +216,8 @@ namespace JobPortalAPI.Controllers
             }
         }
 
-        [HttpGet("StausEmp")]
-        public async Task<IActionResult> StausEmp([FromQuery] EmployeerDto user)
+        [HttpPost("StausEmp")]
+        public async Task<IActionResult> StausEmp([FromBody] EmployeerDto user)
         {
 
             if (user.BaseModel == null)
