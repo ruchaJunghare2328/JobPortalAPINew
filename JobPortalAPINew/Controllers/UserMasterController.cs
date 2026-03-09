@@ -319,9 +319,7 @@ namespace JopPortalAPI.Controllers
         //    }
         //}
         [HttpPost("AddResumeWithFile")]
-        public async Task<IActionResult> AddResumeWithFile(
-[FromForm] UserMasterDto user,
-[FromForm] IFormFile resumeFile)
+        public async Task<IActionResult> AddResumeWithFile([FromForm] UserMasterDto user, [FromForm] IFormFile resumeFile)
         {
             try
             {
@@ -371,23 +369,6 @@ namespace JopPortalAPI.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
-        //[HttpPost("AddResumeWithFile")]
-        //public async Task<IActionResult> AddResumeWithFile([FromForm] UserMasterDto user, [FromForm] IFormFile resumeFile)
-        //{
-        //    try
-        //    {
-
-
-        //        if (user.BaseModel == null)
-        //            user.BaseModel = new BaseModel();
-
-        //        var accountName = _configuration["AzureBlobStorage:AccountName"];
-        //        var containerName = _configuration["AzureBlobStorage:ContainerName"];
-        //        var blobUri = new Uri($"https://{accountName}.blob.core.windows.net");
-
-        //        var credential = new DefaultAzureCredential();
-        //        user.BaseModel.OperationType = "UploadResume";
-        //        user.um_updateddate = DateTime.Now;
 
         //        if (resumeFile != null && resumeFile.Length > 0)
         //        {
@@ -470,8 +451,6 @@ namespace JopPortalAPI.Controllers
         //        return StatusCode(500, $"Error downloading file: {ex.Message}");
         //    }
         //}
-
-
         [HttpGet("DownloadResume")]
         public async Task<IActionResult> DownloadResume([FromQuery] UserMasterDto user, string fileName)
         {
@@ -524,6 +503,61 @@ namespace JopPortalAPI.Controllers
                 return StatusCode(500, $"Error downloading file: {ex.Message}");
             }
         }
+        //old code
+        //[HttpGet("DownloadResume")]
+        //public async Task<IActionResult> DownloadResume([FromQuery] UserMasterDto user, string fileName)
+        //{
+        //    if (string.IsNullOrWhiteSpace(fileName))
+        //        return BadRequest("Filename is required.");
+
+        //    var accountName = _configuration["AzureBlobStorage:AccountName"];
+        //    var containerName = _configuration["AzureBlobStorage:ContainerName"];
+
+        //    if (string.IsNullOrEmpty(accountName) || string.IsNullOrEmpty(containerName))
+        //        return StatusCode(500, "Storage configuration is missing.");
+
+        //    try
+        //    {
+        //        // Correct full URI: includes account + container
+        //        var containerUri = new Uri($"https://{accountName}.blob.core.windows.net/{containerName}");
+        //        var containerClient = new BlobContainerClient(containerUri, new DefaultAzureCredential());
+
+        //        // ONLY the file name here (NOT container name)
+        //        var blobClient = containerClient.GetBlobClient(fileName);
+
+        //        if (!await blobClient.ExistsAsync())
+        //            return NotFound("File not found in blob storage.");
+
+        //        byte[] fileBytes;
+        //        using (var memoryStream = new MemoryStream())
+        //        {
+        //            await blobClient.DownloadToAsync(memoryStream);
+        //            fileBytes = memoryStream.ToArray();
+        //        }
+
+        //        var result = new
+        //        {
+        //            Outcome = new
+        //            {
+        //                OutcomeId = 1,
+        //                OutcomeDetail = "Resume downloaded successfully"
+        //            },
+        //            Data = new
+        //            {
+        //                FileName = fileName,
+        //                ContentType = "application/pdf",
+        //                FileBytes = fileBytes
+        //            },
+        //            UserId = user.UserId
+        //        };
+
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Error downloading file: {ex.Message}");
+        //    }
+        //}
 
 
         //[HttpPost("upload")]
