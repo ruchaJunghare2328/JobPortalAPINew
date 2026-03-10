@@ -90,6 +90,27 @@ namespace JobPortalAPI.Controllers
             }
         }
 
+        [HttpGet("GetJob")]
+        public async Task<IActionResult> GetJob([FromQuery] EmployeerDto user)
+        {
+            try
+            {
+
+                if (user.BaseModel == null)
+                {
+                    user.BaseModel = new BaseModel();
+                }
+
+                user.BaseModel.OperationType = "GetByIdJob";
+                var createduser = await _employeemaster.EmpMaster(user);
+                return createduser;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         [HttpGet("SimilarJobs")]
         public async Task<IActionResult> SimilarJobs([FromQuery] EmployeerDto user)
         {
