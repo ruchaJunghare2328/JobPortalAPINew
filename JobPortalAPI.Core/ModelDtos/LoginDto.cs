@@ -27,4 +27,19 @@ namespace JopPortalAPI.Core.ModelDtos
         public string? NewPassword { get; set; }
 
     }
+    public class ContactUsDto
+    {
+        public BaseModel? BaseModel { get; set; }
+        public Guid? Id { get; set; }
+
+        public string? Name { get; set; }
+                     
+        public string? Email { get; set; }
+                     
+        public string? Subject { get; set; }
+                     
+        public string? Message { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+    }
 }

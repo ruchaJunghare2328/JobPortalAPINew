@@ -335,6 +335,72 @@ namespace JopPortalAPI.Core.Repository
                 }
             }
         }
+
+        //public async Task<IActionResult> InsertContactInfo(ContactUsDto model)
+        //{
+
+        //    using (var connection = _dbContext.CreateConnection())
+
+        //    {
+        //        var parameter = SetLogin(model);
+        //        try
+        //        {
+        //            var sqlConnection = (Microsoft.Data.SqlClient.SqlConnection)connection;
+        //            await sqlConnection.OpenAsync();
+        //            var queryResult = await connection.QueryMultipleAsync("Proc_LoginDetails", parameter, commandType: CommandType.StoredProcedure, commandTimeout: 300);
+        //            var Model = queryResult.Read<Object>().ToList();
+        //            var outcome = queryResult.ReadSingleOrDefault<Outcome>();
+        //            var outcomeId = outcome?.OutcomeId ?? 0;
+        //            var outcomeDetail = outcome?.OutcomeDetail ?? string.Empty;
+        //            var result = new Result
+        //            {
+        //                Outcome = outcome,
+        //                Data = Model,
+        //                UserId = model.UserId
+        //            };
+
+        //            if (outcomeId == 1)
+        //            {
+        //                return new ObjectResult(result)
+        //                {
+        //                    StatusCode = 200
+        //                };
+        //            }
+        //            else if (outcomeId == 2)
+        //            {
+        //                return new ObjectResult(result)
+        //                {
+        //                    StatusCode = 409
+        //                };
+        //            }
+        //            else if (outcomeId == 3)
+        //            {
+        //                return new ObjectResult(result)
+        //                {
+        //                    StatusCode = 423
+        //                };
+        //            }
+        //            else if (outcomeId == 4)
+        //            {
+        //                return new ObjectResult(result)
+        //                {
+        //                    StatusCode = 424
+        //                };
+        //            }
+        //            else
+        //            {
+        //                return new ObjectResult(result)
+        //                {
+        //                    StatusCode = 400
+        //                };
+        //            }
+        //        }
+        //        catch (Exception)
+        //        {
+        //            throw;
+        //        }
+        //    }
+        //}
         public DynamicParameters SetLogin(LoginDto user)
         {
             DynamicParameters parameters = new DynamicParameters();
@@ -355,6 +421,25 @@ namespace JopPortalAPI.Core.Repository
             return parameters;
 
         }
+
+        //public DynamicParameters SetContact(ContactUsDto user)
+        //{
+        //    DynamicParameters parameters = new DynamicParameters();
+        //    parameters.Add("@OperationType", user.BaseModel.OperationType, DbType.String);
+        //    parameters.Add("@Id", user.Id, DbType.String);
+        //    parameters.Add("@MailId", user., DbType.String);
+        //    parameters.Add("@Password", user.Password, DbType.String);
+        //    parameters.Add("@OldPassword", user.OldPassword, DbType.String);
+        //    parameters.Add("@NewPassword", user.NewPassword, DbType.String);
+        //    parameters.Add("@IpAddress", user.IpAddress, DbType.String);
+        //    parameters.Add("@SessionId", user.SessionId, DbType.String);
+        //    parameters.Add("@SessionIds", dbType: DbType.String, size: 4000, direction: ParameterDirection.Output);
+        //    parameters.Add("@IpAddresss", dbType: DbType.String, size: 4000, direction: ParameterDirection.Output);
+        //    parameters.Add("@OutcomeId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+        //    parameters.Add("@OutcomeDetail", dbType: DbType.String, size: 4000, direction: ParameterDirection.Output);
+        //    return parameters;
+
+        //}
 
     }
 }
