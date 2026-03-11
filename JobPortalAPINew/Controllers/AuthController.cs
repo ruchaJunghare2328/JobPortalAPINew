@@ -334,7 +334,28 @@ namespace JopPortalAPI.Controllers
             }
         }
 
+        //[HttpPost("AddContact")]
+        //public async Task<IActionResult> AddContact([FromBody] ContactUsDto user)
+        //{
+        //    try
+        //    {
+        //        if (user.BaseModel == null)
+        //        {
+        //            user.BaseModel = new BaseModel();
+        //        }
 
+
+        //        user.BaseModel.OperationType = "UpdateAlert";
+
+        //        dynamic createduser = await _authService.InsertContactInfo(user);
+        //        var outcomeidvalue = createduser.Value.Outcome.OutcomeId;
+        //        return createduser;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
         private JwtSecurityToken GetToken(List<Claim> authClaims)
 		{
 			var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));

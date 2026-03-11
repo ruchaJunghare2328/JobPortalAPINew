@@ -319,9 +319,7 @@ namespace JopPortalAPI.Controllers
         //    }
         //}
         [HttpPost("AddResumeWithFile")]
-        public async Task<IActionResult> AddResumeWithFile(
-    [FromForm] UserMasterDto user,
-    [FromForm] IFormFile resumeFile)
+        public async Task<IActionResult> AddResumeWithFile([FromForm] UserMasterDto user, [FromForm] IFormFile resumeFile)
         {
             try
             {
@@ -371,24 +369,6 @@ namespace JopPortalAPI.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
-        //old code
-        //[HttpPost("AddResumeWithFile")]
-        //public async Task<IActionResult> AddResumeWithFile([FromForm] UserMasterDto user, [FromForm] IFormFile resumeFile)
-        //{
-        //    try
-        //    {
-
-
-        //        if (user.BaseModel == null)
-        //            user.BaseModel = new BaseModel();
-
-        //        var accountName = _configuration["AzureBlobStorage:AccountName"];
-        //        var containerName = _configuration["AzureBlobStorage:ContainerName"];
-        //        var blobUri = new Uri($"https://{accountName}.blob.core.windows.net");
-
-        //        var credential = new DefaultAzureCredential();
-        //        user.BaseModel.OperationType = "UploadResume";
-        //        user.um_updateddate = DateTime.Now;
 
         //        if (resumeFile != null && resumeFile.Length > 0)
         //        {

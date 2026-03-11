@@ -51,7 +51,7 @@ namespace JobPortalAPI.Core.ModelDtos
         public string? Featured { get; set; } = "0";
         public string? Bookmark { get; set; } = "0";
         public string? Tagline2 { get; set; }
-        public string? statusbyemployee { get; set; }
+        public string? StatusByEmployee { get; set; }
         public DataTable? DataTable { get; set; }
     }
 }
