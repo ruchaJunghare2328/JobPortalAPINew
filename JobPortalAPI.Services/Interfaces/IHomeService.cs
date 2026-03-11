@@ -16,5 +16,6 @@ namespace JobPortalAPI.Services.Interfaces
         public Task<IActionResult> Getjobtiltle(JobLocation model);
         public Task<IActionResult> Getcomapanyname(JobLocation model);
         public Task<IActionResult> GetSearch(HomeDto model);
+        public Task<IActionResult> Homedata(HomeDto model);
     }
 }

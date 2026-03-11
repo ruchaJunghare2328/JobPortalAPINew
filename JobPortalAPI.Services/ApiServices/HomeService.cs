@@ -47,5 +47,11 @@ namespace JobPortalAPI.Services.ApiServices
             return await _homeRepositry.GetCat(model);
 
         }
+
+        public async Task<IActionResult> Homedata(HomeDto model)
+        {
+            return await _homeRepositry.Homedata(model);
+
+        }
     }
 }

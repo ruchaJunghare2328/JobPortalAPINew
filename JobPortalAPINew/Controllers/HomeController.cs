@@ -113,6 +113,37 @@ namespace JobPortalAPI.Controllers
             }
         }
 
+        [HttpPost("AddContactUsInfo")]
+        public async Task<IActionResult> AddContactUsInfo([FromBody] HomeDto user)
+        {
+            try
+            {
+                if (user.BaseModel == null)
+                {
+                    user.BaseModel = new BaseModel();
+                }
+
+                 
+                    user.BaseModel.OperationType = "AddContactUsInfo";
+                 
+                dynamic createduser = await _homeService.Homedata(user);
+                var outcomeidvalue = createduser.Value.Outcome.OutcomeId;
+                //if (outcomeidvalue == 1)
+                //{
+
+                //	var datavalue = createduser.Value.Outcome.OutcomeDetail;
+
+                //	await SendNo(datavalue);
+                //}
+
+                return createduser;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
         [HttpGet("SearchJob")]
         public async Task<IActionResult> SearchJob([FromQuery] HomeDto user)

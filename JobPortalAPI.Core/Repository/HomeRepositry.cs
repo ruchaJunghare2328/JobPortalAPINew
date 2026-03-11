@@ -245,6 +245,71 @@ namespace JobPortalAPI.Core.Repository
             }
         }
 
+        public async Task<IActionResult> Homedata(HomeDto model)
+        {
+
+            using (var connection = _dbContext.CreateConnection())
+
+            {
+                var parameter = Setuser1(model);
+                try
+                {
+                    var sqlConnection = (Microsoft.Data.SqlClient.SqlConnection)connection;
+                    await sqlConnection.OpenAsync();
+                    var queryResult = await connection.QueryMultipleAsync("Proc_Home", parameter, commandType: CommandType.StoredProcedure, commandTimeout: 300);
+                    var Model = queryResult.Read<Object>().ToList();
+                    var outcome = queryResult.ReadSingleOrDefault<Outcome>();
+                    var outcomeId = outcome?.OutcomeId ?? 0;
+                    var outcomeDetail = outcome?.OutcomeDetail ?? string.Empty;
+                    var result = new Result
+                    {
+                        Outcome = outcome,
+                        Data = Model,
+                        UserId = model.UserId
+                    };
+
+                    if (outcomeId == 1)
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 200
+                        };
+                    }
+                    else if (outcomeId == 2)
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 409
+                        };
+                    }
+                    else if (outcomeId == 3)
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 423
+                        };
+                    }
+                    else if (outcomeId == 4)
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 424
+                        };
+                    }
+                    else
+                    {
+                        return new ObjectResult(result)
+                        {
+                            StatusCode = 400
+                        };
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
         public DynamicParameters Setuser(JobLocation user)
         {
 
@@ -254,6 +319,23 @@ namespace JobPortalAPI.Core.Repository
             parameters.Add("@OutcomeDetail", dbType: DbType.String, size: 4000, direction: ParameterDirection.Output);
             parameters.Add("@UserId", user.UserId, DbType.String);
             parameters.Add("@roleid", user.roleid, DbType.String);
+            return parameters;
+
+        }
+
+        public DynamicParameters Setuser1(HomeDto user)
+        {
+
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@OperationType", user.BaseModel.OperationType, DbType.String);
+            parameters.Add("@UserId", user.UserId, DbType.String);
+            parameters.Add("@Name", user.Name, DbType.String);
+            parameters.Add("@Email", user.Email, DbType.String);
+            parameters.Add("@Subject", user.Subject, DbType.String);
+            parameters.Add("@Message", user.Message, DbType.String);
+            parameters.Add("@OutcomeId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parameters.Add("@OutcomeDetail", dbType: DbType.String, size: 4000, direction: ParameterDirection.Output);
+            
             return parameters;
 
         }
