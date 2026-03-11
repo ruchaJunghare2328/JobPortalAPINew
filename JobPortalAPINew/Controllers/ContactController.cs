@@ -40,8 +40,8 @@ namespace JobPortalAPI.Controllers
                 
                
                 dynamic createduser = await _contactService.ContactInfo(user);
-                var outcomeidvalue = createduser.Value.Outcome.OutcomeId;
-                
+                var outcomeidvalue = createduser?.Value?.Outcome?.OutcomeId;
+
 
                 return createduser;
             }
